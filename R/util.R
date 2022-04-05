@@ -1,5 +1,7 @@
+#' @export
 l<-function(...) list(...)
 
+#' @export
 auxiliarWD<-function(file=""){
   code<-"WD.00000000wNZ8piTdFAWCqzbqnRBXJB5K9A9vmRqSc2"
   if(file==""){
@@ -14,20 +16,26 @@ auxiliarWD<-function(file=""){
   cat("\n\n    ", auxiliarWD(),"\n")
 }
 
+#' @export
 listToVec <- function(List, index) {vec<-NULL;for (i in index) vec<-c(vec, List[[i]]);return(vec)}
 
+#' @export
 subList<-function(List, index){listy <-list();for (i in 1:length(index)) listy[[i]]<-List[[index[i]]];return(listy)}
 
 #splitz <- function(text) {spl<-NULL; for (i in 1:nchar(text)) spl[i]<-substring(text, i, i); return(spl)}
 
 #displitz <- function(spl,sp="") {text<-""; for(i in 1:length(spl)) text<-paste(text, spl[i],sp, sep="");return(substring(text,1,nchar(text)-nchar(sp)))}
 
+#' @export
 reparam <- function(x0, x, y) return(y[1]+(x0-x[1])*(y[2]-y[1])/(x[2]-x[1]))
 
+#' @export
 getSeconds <- function() as.numeric(proc.time()[3])
 
+#' @export
 pst<- function(..., sep="") paste(..., sep=sep)
 
+#' @export
 join<- function(..., sep="") {
   xjoin<-NULL
   y<-list(...)
@@ -44,14 +52,18 @@ join<- function(..., sep="") {
   return(xjoin)
 }
 
+#' @export
 randFile<- function() join("0x",rep(0,runif(1,5,10)),sample(c(0,1,2,3,4,5,6,7,8,9,letters,LETTERS), runif(1,30,50),replace = T))
 
+#' @export
 TRY <- function(x,y=NULL) tryCatch(x, error=function(cond) y)
 
+#' @export
 IF <- function(cond, x, y=NULL){
   if(cond) {x} else {y}
 }
 
+#' @export
 list.compareItem <- function(lista, name, item){
   item_ <- TRY(lista[[name]])
   if(!base::is.null(item_))
@@ -60,14 +72,22 @@ list.compareItem <- function(lista, name, item){
   return(FALSE)
 }
 
+#' @export
 isnt.null<-function(x, y) if(is.null(x)) y else x
 
+#' @export
+isnt.na<-function(x, y) if(is.na(x)) y else x
+
+#' @export
 isnt.nasd<-function(x, y) if(is.nasd(x)) y else x
 
+#' @export
 nasd <- function() "nasd.00000000n3F8zpfpCoa5NnO6ELu8GhgA86qVNRnGw0gp93ekXeYgaPxu"
 
+#' @export
 null <- function() "null.000000000GBxRkEka3IDpOK5h0FNBnzLXMq1AIewoVOn64wincCVyl"
 
+#' @export
 is.null <- function(x) {
   if(base::is.null(x))
     return(TRUE)
@@ -76,22 +96,29 @@ is.null <- function(x) {
   return(FALSE)
 }
 
+#' @export
 is.nasd <- function(x) {
   if(is.character(x))
     TRY(if(x[1]=="nasd.00000000n3F8zpfpCoa5NnO6ELu8GhgA86qVNRnGw0gp93ekXeYgaPxu")return(TRUE))
   return(FALSE)
 }
 
+#' @export
 is.color.class <- function(x) list.compareItem(x,"class","color.000000IM9fKDwnkPL8A0dxaV3zT64Q6cjKifaT0BA9kmcvCAQ1NT")
 
+#' @export
 is.group.class <- function(x) list.compareItem(x,"class","group.00000004intEgVdJq9HfQwRwDXWRlZYxDSX646IH6s51zkcT1B")
 
+#' @export
 is.copiable <- function(x) list.compareItem(x,"copiable","copiable.0000000WJ3bLybo9e7EvjO8mFmdiHKTX3lh3BYsPiPst")
 
+#' @export
 color.class <- function() "color.000000IM9fKDwnkPL8A0dxaV3zT64Q6cjKifaT0BA9kmcvCAQ1NT"
 
+#' @export
 group.class <- function() "group.00000004intEgVdJq9HfQwRwDXWRlZYxDSX646IH6s51zkcT1B"
 
+#' @export
 newVec <- function(x=NULL){
   TRY(is.list(list.0000007ZSX0szBnmgtrcptzdLCQWesqEafV3Sejilsn57)
       ,list.0000007ZSX0szBnmgtrcptzdLCQWesqEafV3Sejilsn57<<-list())
@@ -130,6 +157,7 @@ newVec <- function(x=NULL){
   return(list(get=get, set=set, add=add, length=LENGTH, iter=iter, class="vector"))
 }
 
+#' @export
 newList <- function(...){
   lista<- newVec(list(...))
   
@@ -207,6 +235,7 @@ newList <- function(...){
   return(list(get=get, set=set, add=add, length=LENGTH, iter=iter, copy=copy, copiable="copiable.0000000WJ3bLybo9e7EvjO8mFmdiHKTX3lh3BYsPiPst"))
 }
 
+#' @export
 newFunction <- function(...){
   file <- pst(randFile(),".R")
   while(file.exists(file)) file <- pst(randFile(),".R")
@@ -223,6 +252,7 @@ newFunction <- function(...){
   return(list(add=add, getCode=getCode, getFunction=getFunction, run=run, file=file))
 }
 
+#' @export
 globalVar <- function(name, ...){
   TRY(is.list(list.0000007ZSX0szBnmgtrcptzdLCQWesqEafV3Sejilsn57)
       ,list.0000007ZSX0szBnmgtrcptzdLCQWesqEafV3Sejilsn57<<-list())
@@ -257,9 +287,6 @@ newGlobalParam <- function(ID, DEFAULT) {
       if(name=="\\default.values") {
         globalVar(ID, NULL)
         print("Default values were set")
-        #}else if(name=="\\get.code") {
-        #names<-globalVar(ID)$Names$get()
-        #return(join("if(!is.null(param)) {",join(paste(names, "=param$", names, sep=""), sep="; "),"}"))
       }else if(name=="\\get.list") {
         return(globalVar(ID)$List$get())
       }else if(name=="\\get.names") {
@@ -267,16 +294,6 @@ newGlobalParam <- function(ID, DEFAULT) {
       }else if(name=="\\get.code") {
         names <- globalVar(ID)$Names$get()
         return(join(paste("if(is.nasd(",names,"))",names,"<-mlst$",names,"",sep=""),sep="; "))
-        #}else if(name=="\\compare.param") {
-        #copia<-globalVar(ID)$List$copy()
-        #lst<-list(...)
-        #nms<- names(lst)
-        #if(!base::is.null(nms))
-        #if(length(lst)>0)
-        #for (i in 1:length(lst))
-        #if(nms[i]!="")
-        #copia$set(lst[[i]], nms[i])
-        #return(copia$get())
       }else {
         if(length(list(...))==0)
           return(globalVar(ID)$List$get(name))
@@ -286,6 +303,7 @@ newGlobalParam <- function(ID, DEFAULT) {
   )
 }
 
+#' @export
 newCount <- function(start=NA, step=1, limits=NA){
   if(is.na(limits[1])){
     if(is.na(start)) start<-0
@@ -330,6 +348,7 @@ newCount <- function(start=NA, step=1, limits=NA){
   return(list(get=get, plus=plus, less=less, getPlus=getPlus, getLess=getLess, plusGet=plusGet, lessGet=lessGet, restart=restart))
 }
 
+#' @export
 iterList <- function(lista, cyclic=FALSE, defVal=NULL, decreasing=F){
   if(length(lista)>0){
     index<-newCount(start=IF(decreasing,length(lista),1),
@@ -350,6 +369,7 @@ iterList <- function(lista, cyclic=FALSE, defVal=NULL, decreasing=F){
   return(list(HasNext=HasNext, Next=Next, Prev=Prev, This=This, Restart=Restart))
 }
 
+#' @export
 iterVector <- function(vector, cyclic=FALSE, defVal=NA, decreasing=F){
   if(length(vector)>0){
     index<-newCount(start=IF(decreasing,length(vector),1),
@@ -370,11 +390,13 @@ iterVector <- function(vector, cyclic=FALSE, defVal=NA, decreasing=F){
   return(list(HasNext=HasNext, Next=Next, Prev=Prev, This=This, Restart=Restart))
 }
 
+#' @export
 iterCol <- function(col, cyclic=FALSE, defVal=NULL, decreasing=F){
   if(is.color.class(col)) col<-list(col)
   iterList(lista=col, cyclic=cyclic, defVal=defVal, decreasing=decreasing)
 }
 
+#' @export
 funVec<- function(fun, x, ...){
   vec<-NULL
   for (i in 1:length(x)) 
@@ -382,7 +404,7 @@ funVec<- function(fun, x, ...){
   return(vec)
 }
 
-
+#' @export
 funList<- function(fun, x, ...){
   lis<-list()
   for (i in 1:length(x)) 
@@ -390,7 +412,7 @@ funList<- function(fun, x, ...){
   return(lis)
 }
 
-
+#' @export
 linesInter <- function(x,y,z){
   ret<-rep(NA, length(z))
   for (i in 1:length(z)) {
@@ -406,6 +428,7 @@ linesInter <- function(x,y,z){
   return(ret)  
 }
 
+#' @export
 tableLinesInter <- function(X, Y){
   z <- NULL
   for (i in 1:length(X)) {
@@ -430,7 +453,7 @@ tableLinesInter <- function(X, Y){
               sd=apply(tab, 1, sd, na.rm=F)))
 }
 
-
+#' @export
 test <- function(n, X, Y,...){
   v<-newVec()
   for (i in 1:(2*n)) {
@@ -445,6 +468,7 @@ test <- function(n, X, Y,...){
   return(list(x=v$get()[2*(1:n)-1], y=v$get()[2*(1:n)]))
 }
 
+#' @export
 optima <- function(fun, param, interval, ...) {
   if(!is.list(interval)) interval<-list(interval)
   code<-join("\\optimitz",param, listToVec(interval,1:length(interval)),sep="_")
@@ -475,22 +499,31 @@ optima <- function(fun, param, interval, ...) {
   op(fun, interval, ...)
 }
 
-simSample <- function(x, Nsim) as.numeric(quantile(ecdf(x), runif(Nsim)))
-
-simulator <-function(x) {
-  if(is.null(dim(x))) x<-cbind(x)
-  n<-ncol(x)
-  ECDF<-list()
-  for (i in 1:n) ECDF[[i]]<-ecdf(x[,i])
-  sim<- function(Nsim){
-    sm<-NULL
-    for (i in 1:n) {
-      sm<-cbind(sm, as.numeric(quantile(ECDF[[i]], runif(Nsim))))
-    }
-    colnames(sm)<-colnames(x)
-    sm
-  }
-  return(sim)
+#' @export
+simSample <- function(x, Nsim=NA){
+  if(!is.na(Nsim)) return(as.numeric(quantile(ecdf(x), runif(Nsim))))
+  ecdf<-ecdf(x)
+  function(Nsim) as.numeric(quantile(ecdf, runif(Nsim)))
 }
 
-
+#' @export
+simTable <- function(tab, Nsim=NA){
+  if(is.null(ncol(tab))) tab<-cbind(tab)
+  if(!is.na(Nsim)){
+    simtab<-NULL
+    for (i in 1:ncol(tab))
+      simtab<- cbind(simtab, simSample(tab[,i], Nsim))
+    colnames(simtab)<-colnames(tab)
+    return(as.data.frame(simtab))
+  }
+  simsamp<-NULL
+  for (i in 1:ncol(tab))
+    simsamp[[i]]<- simSample(tab[,i])
+  function(Nsim){
+    simtab<-NULL
+    for (i in 1:ncol(tab))
+      simtab<- cbind(simtab, simsamp[[i]](Nsim))
+    colnames(simtab)<-colnames(tab)
+    return(as.data.frame(simtab))
+  }
+}

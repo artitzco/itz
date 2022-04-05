@@ -1,102 +1,4 @@
-fixCol<-function(col){
-  IF(is.null(col), color(), IF(is.character(col), color(col), col))
-}
-
-textRGB<- function(col) {
-  code<-pst("\\text.color", col, sep="_")
-  cls<-globalVar(code)
-  if(!base::is.null(cls)) return(cls)
-  file<-join(randFile(),".png")
-  png(file, width=300, height=300)
-  plot(.5, xlim=c(0,1), ylim=c(0,1), type="n")
-  TRY(polygon(c(0,0,1,1), c(0,1,1,0), col=col),{
-    dev.off()
-    unlink(file)
-    return(c(1,1,1))
-  })
-  dev.off()
-  rgb<-png::readPNG(file)[150,150,]
-  unlink(file)
-  cls<-rgb[1:3]
-  globalVar(code, cls)
-  return(cls)
-}
-
-color <- function(r=NA, g=NA, b=NA, maxValue=1) {
-  if(is.character(r)) { 
-    tab<-NULL
-    for (i in 1:length(r)) 
-      tab<-rbind(tab, textRGB(r[i]))
-    r<-tab[,1]
-    g<-tab[,2]
-    b<-tab[,3]
-  }
-  if(length(r)>1 |length(g)>1| length(b)>1)
-    return(colorList(r,g,b,maxValue))
-  if(is.na(r)){r<-runif(1)}else{r<-r/maxValue}
-  if(is.na(g)){g<-runif(1)}else{g<-g/maxValue}
-  if(is.na(b)){b<-runif(1)}else{b<-b/maxValue}
-  RGB<- newVec(c(r,g,b))
-  getRGB<- function(this=F) RGB$get()
-  getCol<- function(alp=1, bri =1, this=F) {
-    cls<-bri*getRGB()
-    return(rgb(cls[1], cls[2], cls[3], alp))
-  }
-  combine<- function(col, r=0.5) {
-    if(length(r)>1) {
-      lst<-list()
-      for (i in 1:length(r)) {
-        cls <- (1-r[i])*getRGB()+r[i]*col$getRGB()
-        lst[[i]] <- color(cls[1], cls[2], cls[3])
-      }
-      return(colorList(col=lst))
-    }
-    cls <- (1-r)*getRGB()+r*col$getRGB()
-    return(color(cls[1], cls[2], cls[3]))
-  }
-  sequence<- function(col, n) {
-    r<-if(n!=1)seq(0,1, 1/(n-1)) else 0.5
-    colist<- newList()
-    for (i in 1:n) colist$add(combine(col, r[i]))
-    return(colorList(colist=colist))
-  }
-  copy<-function() color(r,g,b)
-  inverse<-function() color(1-r, 1-g, 1-b)
-  return(list(getRGB=getRGB, getCol=getCol, combine=combine, sequence=sequence,
-              copy=copy, inverse=inverse, copiable="copiable.0000000WJ3bLybo9e7EvjO8mFmdiHKTX3lh3BYsPiPst", 
-              class="color.000000IM9fKDwnkPL8A0dxaV3zT64Q6cjKifaT0BA9kmcvCAQ1NT"))
-}
-
-colorList<- function(r=NA, g=NA, b=NA, maxValue=1, colist=NULL) {
-  if(is.null(colist)) {
-    colist<-newList()
-    if(!is.na(r[1]) | !is.na(g[1]) | !is.na(b[1])) {
-      if(is.na(r[1])){r<-runif(1)}else{r<-r/maxValue}
-      if(is.na(g[1])){g<-runif(1)}else{g<-g/maxValue}
-      if(is.na(b[1])){b<-runif(1)}else{b<-b/maxValue}
-      n<-max(length(r),length(g),length(b))
-      r<-r[1+((1:n)-1)%%length(r)]
-      g<-g[1+((1:n)-1)%%length(g)]
-      b<-b[1+((1:n)-1)%%length(b)]
-      for (i in 1:n) colist$add(color(r[i],g[i],b[i])) 
-    }
-  }
-  varIter<-newVec(colist$iter(cyclic=TRUE, color(0,0,0)))
-  add <- function(col) {
-    colist$add(col)
-    varIter$set(colist$iter(cyclic=TRUE))
-  }
-  
-  getColor <- function(this) IF(this, varIter$get()$This(), varIter$get()$Next())
-  getRGB <- function(this=F) getColor(this)$getRGB()
-  getCol<- function(alp=1, bri=1, this=F) getColor(this)$getCol(alp=alp, bri=bri)
-  copy<-function() color(r,g,b)
-  inverse<-function() color(1-r, 1-g, 1-b)
-  return(list(getRGB=getRGB, getCol=getCol, add=add,length=colist$length,
-              copy=copy, inverse=inverse, copiable="copiable.0000000WJ3bLybo9e7EvjO8mFmdiHKTX3lh3BYsPiPst", 
-              class="color.000000IM9fKDwnkPL8A0dxaV3zT64Q6cjKifaT0BA9kmcvCAQ1NT"))
-}
-
+#' @export
 Lines <- function(name, ...) {
   newGlobalParam(
     "x0000000mbf0N4sBjYI2uWKd29PXxpWMoUgANOR27kPg4h4JPEJ"
@@ -109,7 +11,7 @@ Lines <- function(name, ...) {
   ) (name, ...)
 }
 
-
+#' @export
 Points <- function(name, ...) {
   newGlobalParam(
     "x0000000XOj4zAq3BxojQ4xB5kdXREfiFpVerO9qR6XWoYkvC9r"
@@ -121,6 +23,7 @@ Points <- function(name, ...) {
   ) (name, ...)
 }
 
+#' @export
 Abline <- function(name, ...) {
   newGlobalParam(
     "x00000000wB8kBq0tLHhQYm1uVm3uQ5F7QN5nkC45U0ebFG8uhc"
@@ -134,47 +37,47 @@ Abline <- function(name, ...) {
   ) (name, ...)
 }
 
+#' @export
 Plot <- function(name, ...) {
   newGlobalParam(
     "x00000s84o5c8Px2ImUj0GxXsQzq0rsUrq5oL2deyXPrw1lPxGw"
     ,function(add){
-      add("alp"           , NULL)
-      add("col"           , NULL)
-      add("lwd"           , NULL)
-      add("lty"           , NULL)
       add("alp.backlines" , 0.5)
+      add("alp.background", 1)
+      add("alp.border"    , 0)
       add("cex.axis"      , 1.1)
       add("cex.lab"       , 1.3)
       add("cex.main"      , 1.3)
-      add("col.background", color("#161616"))
-      add("col.backlines" , color("#808080"))
+      add("col.background", "#161A25")
+      add("col.backlines" , "#808080")
+      add("col.border"    , "black")
       add("labX"          , NA)
       add("labY"          , NA)
       add("lty.backlines" , 1)
       add("lwd.backlines" , 1)
       add("lx"            , NA)
       add("ly"            , NA)
-      add("main"          , NA)
       add("plot.lines"    , TRUE)
       add("plot.points"   , FALSE)
       add("px"            , 6)
       add("py"            , 6)
-      add("xlab"          , NA)
-      add("xlim"          , NULL)
-      add("ylab"          , NA)
-      add("ylim"          , NULL)
       add("xdigits"       , NA)
       add("ydigits"       , NA)
+      add("xaxis"         , T)
+      add("yaxis"         , T)
+      add("xaxis.pos"     , T)
+      add("yaxis.pos"     , T)
     }
   ) (name, ...)
 }
 
+#' @export
 Bar <- function(name, ...) {
   newGlobalParam(
     "x000000bPQwasoSlZDX0Ka3Ef89h0d8s89g90hVqdwGw37B1tGu"
     ,function(add){
       add("alp.bar", 1)
-      add("col.bar", color("#A6A6A6"))
+      add("col.bar", "#A6A6A6")
       add("lwd.bar", 2)
       add("lty.bar", 1)
       add("horizontal", T)
@@ -182,6 +85,7 @@ Bar <- function(name, ...) {
   ) (name, ...)
 }
 
+#' @export
 Hist <- function(name, ...) {
   newGlobalParam(
     "x00000000mF3zti9sP0msATjc7UEkz5BNIAQ4rr2fVGsy3NHzBX"
@@ -189,14 +93,15 @@ Hist <- function(name, ...) {
       add("relative"  , T)
       add("horizontal", T)
       add("new.plot" , T)
-      add("alp.hist"  , 0.8)
-      add("col.hist"  , color("#A6A6A6"))
+      add("alp.hist"  , 0.7)
+      add("col.hist"  , NULL)
       add("lty.hist"  , 1)
       add("lwd.hist"  , 2)
     }
   ) (name, ...)
 }
 
+#' @export
 Shadow <- function(name, ...) {
   newGlobalParam(
     "x0000000s95B0TU1PJbJ10FAcYgxrv7sbuv6yHd9d8g8DFf0Md4"
@@ -209,22 +114,23 @@ Shadow <- function(name, ...) {
       add("col.mean"   , NULL)
       add("lty.border" , 1)
       add("lty.mean"   , 1)
-      add("lwd.border" , 1)
+      add("lwd.border" , 0)
       add("lwd.mean"   , 1)
       add("plot.shadow", T)
-      add("plot.mean", T)
+      add("plot.mean"  , T)
     }
   ) (name, ...)
 }
 
+#' @export
 Legend <- function(name, ...) {
   newGlobalParam(
     "x0000000wTaxROM6a5g511AuPnDtqxelpLNHv4GYcw43tdsAder"
     ,function(add){
-      add("pos.legend", "topright")
-      add("cex.legend", 1)
+      add("cex.legend", 1.3)
       add("col.legend", "#000000")
       add("alp.legend", 1)
+      add("lin"       , T)
       add("col.lin"   , NULL)
       add("alp.lin"   , 1)
       add("lwd.lin"   , 1)
@@ -234,20 +140,47 @@ Legend <- function(name, ...) {
       add("lwd.box"   , 1)
       add("lty.box"   , 1)
       add("col.back"  , "#E6E6E6")
-      add("alp.back"  , 1)
+      add("alp.back"  , 0.8)
     }
   ) (name, ...)
 }
 
-
+#' @title mlines
+#' @description This is a modification to the \code{graphics::lines} function.
+#' @param x \code{x}-coordinate.
+#' @param y \code{y}-coordinate.
+#' @param col.lines lines color.
+#' @param alp.lines lines color transparency.
+#' @param lty.lines lines type.
+#' @param lwd.lines lines width.
+#' @details \code{x} and \code{y} could be vectors or lists.
+#' @seealso \code{itz::Lines}, \code{itz::mplot} & \code{itz::color}.
+#' @examples
+#' x<--10:10
+#' y0<-x^2
+#' y1<-2*x+20
+#' 
+#' mplot(xlim=c(-10,10), ylim=c(0,100))
+#' 
+#' mlines(x, y0)
+#' 
+#' mlines(x, list(y0, y1), col.lines="#AA33AA", lty.lines=2)
+#' 
+#' mlines(x, list(y0, y1), col.lines=c("red","blue"),lwd.lines=3)
+#' 
+#' mlines(x, y0+30, col=color(0.3,0.7,0.5), lty=2, lwd=3)
+#' 
+#' mlines(x, list(y0, y1), col=c("red","blue"), lwd=5)
+#' @export
 mlines <- function(x=NULL, y=NULL,
-                   alp.lines=nasd(),
                    col.lines=nasd(),
+                   alp.lines=nasd(),
                    lty.lines=nasd(),
                    lwd.lines=nasd(),
-                   param=NULL, ...)
+                   ...)
 {
-  mlst<- c(list(...), param, Lines("\\get.list"))
+  lst<-list(...); param<-lst$param; lst$param<-NULL
+  mlst<- c(lst, param, Lines("\\get.list"))
   if(is.nasd(alp.lines))alp.lines<-mlst$alp.lines; if(is.nasd(col.lines))col.lines<-mlst$col.lines; if(is.nasd(lty.lines))lty.lines<-mlst$lty.lines; if(is.nasd(lwd.lines))lwd.lines<-mlst$lwd.lines
   col.lines<-fixCol(isnt.null(col.lines, mlst$col.lines.auxiliar))
   
@@ -296,14 +229,40 @@ mlines <- function(x=NULL, y=NULL,
   }
 }
 
+#' @title mpoints
+#' @description This is a modification to the \code{graphics::points} function.
+#' @param x \code{x}-coordinate.
+#' @param y \code{y}-coordinate.
+#' @param col.points points color.
+#' @param alp.points points color transparency.
+#' @param lwd.points points width.
+#' @details \code{x} and \code{y} could be vectors or lists.
+#' @seealso \code{itz::Points}, \code{itz::mplot} & \code{itz::color}.
+#' @examples
+#' x<--10:10
+#' y0<-x^2
+#' y1<-2*x+20
+#' 
+#' mplot(xlim=c(-10,10), ylim=c(0,100))
+#' 
+#' mpoints(x, y0)
+#' 
+#' mpoints(x, list(y0, y1), col.points="#AA33AA")
+#' 
+#' mpoints(x, list(y0, y1), col.points=c("red","blue"),lwd.points=3)
+#' 
+#' mpoints(x, y0+30, col=color(0.3,0.7,0.5), lwd=3)
+#' 
+#' mpoints(x, list(y0, y1), col=c("red","blue"), lwd=5)
+#' @export
 mpoints <- function(x=NULL, y=NULL,
                     alp.points=nasd(),
                     col.points=nasd(),
-                    lty.points=nasd(),
                     lwd.points=nasd(),
-                    param=NULL, ...)
+                    ...)
 {
-  mlst<- c(list(...), param, Points("\\get.list"))
+  lst<-list(...); param<-lst$param; lst$param<-NULL
+  mlst<- c(lst, param, Points("\\get.list"))
   if(is.nasd(alp.points))alp.points<-mlst$alp.points; if(is.nasd(col.points))col.points<-mlst$col.points; if(is.nasd(lwd.points))lwd.points<-mlst$lwd.points
   col.points<-fixCol(isnt.null(col.points, mlst$col.points.auxiliar))
   if(base::is.null(y) & !base::is.null(x)) {
@@ -318,7 +277,7 @@ mpoints <- function(x=NULL, y=NULL,
     x<-0
     y<-0
   }
-  MPOINTS<-function(x, y, alp.points, col.points, lty.points, lwd.points) {
+  MPOINTS<-function(x, y, alp.points, col.points, lwd.points) {
     if(lwd.points>=1) {
       sq <- seq(0, 1, 1.0/lwd.points)[-1]
       for (i in 1:lwd.points)
@@ -328,38 +287,75 @@ mpoints <- function(x=NULL, y=NULL,
   }
   
   if(!is.list(x) & !is.list(y)) {
-    MPOINTS(x, y, alp.points, col.points, lty.points, lwd.points)
+    MPOINTS(x, y, alp.points, col.points, lwd.points)
   }else {
     if(is.list(x) & is.list(y)) { 
       if(length(x)==1) {
         for (i in 1:length(y))
-          MPOINTS(x[[1]], y[[i]], alp.points, col.points, lty.points, lwd.points)
+          MPOINTS(x[[1]], y[[i]], alp.points, col.points, lwd.points)
       }else if(length(y)==1) {
         for (i in 1:length(x))
-          MPOINTS(x[[i]], y[[1]], alp.points, col.points, lty.points, lwd.points)
+          MPOINTS(x[[i]], y[[1]], alp.points, col.points, lwd.points)
       }else {
         for (i in 1:length(y))
-          MPOINTS(x[[i]], y[[i]], alp.points, col.points, lty.points, lwd.points)
+          MPOINTS(x[[i]], y[[i]], alp.points, col.points, lwd.points)
       }
     }else if(!is.list(x) & is.list(y)) {
       for (i in 1:length(y))
-        MPOINTS(x, y[[i]], alp.points, col.points, lty.points, lwd.points)
+        MPOINTS(x, y[[i]], alp.points, col.points, lwd.points)
     }else if(is.list(x) & !is.list(y)) {
       for (i in 1:length(x))
-        MPOINTS(x[[i]], y, alp.points, col.points, lty.points, lwd.points)
+        MPOINTS(x[[i]], y, alp.points, col.points, lwd.points)
     }
   }
 }
 
+#' @title mabline
+#' @description This is a modification to the \code{graphics::abline} function.
+#' @param h the \code{y}-values for horizontal lines.
+#' @param v the \code{x}-values for vertical lines.
+#' @param col.lines lines color.
+#' @param alp.lines lines color transparency.
+#' @param lty.lines lines type.
+#' @param lwd.lines lines width.
+#' @param sld.lines lines density.
+#' @seealso \code{itz::Abline}, \code{itz::mplot} & \code{itz::color}.
+#' @examples
+#' mplot()
+#' mabline(h=0, v=c(-.5,.5), col.abline="red")
+#' 
+#' mplot()
+#' mabline(h=(-1):1, v=c(-.5,.5), col.abline=c("blue","red"), lwd.abline=5)
+#' 
+#' mplot()
+#' mabline(h=.5, col.abline=color(1,0,1), lwd.abline=6)
+#' mabline(h=-.5, col.abline=color(1,0,1), lwd.abline=6, sld=F)
+#' 
+#' sq<- seq(-1,1,.1)
+#' mplot()
+#' mabline(h=sq, v=sq, col.abline=color(1:0,0:1,1))
+#' 
+#' mplot()
+#' mabline(h=(-1):1, v=c(-.5,.5), col.abline=c("blue","red"), lwd.abline=5)
+#' 
+#' mplot()
+#' mabline(h=.5, col.abline=color(1,0,1), lwd.abline=6)
+#' mabline(h=-.5, col.abline=color(1,0,1), lwd.abline=6, sld=F)
+#' 
+#' sq<- seq(-1,1,.1)
+#' mplot()
+#' mabline(h=sq, v=sq, col.abline=color(1:0,0:1,1), lty.abline=3)
+#' @export
 mabline <- function(h=NULL, v=NULL,
-                    alp.abline =nasd(),
                     col.abline =nasd(),
+                    alp.abline =nasd(),
                     lty.abline =nasd(),
                     lwd.abline =nasd(),
                     sld.abline =nasd(),
-                    param=NULL, ...)
+                    ...)
 {
-  mlst<- c(list(...), param, Abline("\\get.list"))
+  lst<-list(...); param<-lst$param; lst$param<-NULL
+  mlst<- c(lst, param, Abline("\\get.list"))
   if(is.nasd(alp.abline))alp.abline<-mlst$alp.abline; if(is.nasd(col.abline))col.abline<-mlst$col.abline; if(is.nasd(lty.abline))lty.abline<-mlst$lty.abline; if(is.nasd(lwd.abline))lwd.abline<-mlst$lwd.abline; if(is.nasd(sld.abline))sld.abline<-mlst$sld.abline
   col.abline<-fixCol(isnt.null(col.abline, mlst$col.abline.auxiliar))
   
@@ -373,11 +369,12 @@ mabline <- function(h=NULL, v=NULL,
       }
     }
   }
-  mab(function(x, ...) abline(v=x, ...), v)
-  mab(function(x, ...) abline(h=x, ...), h)
+  if(!is.null(h)) mab(function(x, ...) abline(h=x, ...), h)
+  if(!is.null(v)) mab(function(x, ...) abline(v=x, ...), v)
 }
 
-pol <- function(xlim, ylim, px, py,lx=NA,ly=NA,labX=NA,labY=NA, cex=1, background=color(0.086,0.086,0.086), col.backlines=color(.5,.5,.5), lwd=2, lty=1, alp=1, xdigits=NA, ydigits=NA){
+
+pol <- function(xlim, ylim, px, py,lx=NA,ly=NA,labX=NA,labY=NA, cex=1, background=color(0.086,0.086,0.086), col.backlines=color(.5,.5,.5), lwd=2, lty=1, alp=1, xdigits=NA, ydigits=NA, alp.background=alp.background, xaxis=T, yaxis=T, xaxis.pos=T, yaxis.pos=T, col.border="black", alp.border= 0){
   mx <- (xlim[2]-xlim[1])/2
   my <- (ylim[2]-ylim[1])/2
   x <-c(xlim[1]-mx, xlim[2]+mx)
@@ -386,7 +383,6 @@ pol <- function(xlim, ylim, px, py,lx=NA,ly=NA,labX=NA,labY=NA, cex=1, backgroun
   fitDig <- function(lim, n, digits) {
     sq<-seq(lim[1],lim[2],(lim[2]-lim[1])/(n-1))
     if(is.na(digits)) return(sq)
-    
     sqRef <-round(sq, digits)
     its.ok <- function(x){
       for (i in 2:length(x)) 
@@ -404,46 +400,114 @@ pol <- function(xlim, ylim, px, py,lx=NA,ly=NA,labX=NA,labY=NA, cex=1, backgroun
   if(is.na(ly[1])) ly<-fitDig(ylim, py, ydigits)
   if(is.na(labX[1])) labX<-T
   if(is.na(labY[1])) labY<-T
-  
-  polygon(c(x[1],x[1],x[2],x[2]),c(y[1],y[2],y[2],y[1]),col=background$getCol())
+  rect(par("usr")[1], par("usr")[3],
+       par("usr")[2], par("usr")[4],
+       col=background$getCol(alp=alp.background),
+       border=NA)
   mabline(v=lx, h=ly, col.abline=col.backlines, lwd.abline=lwd, lty.abline=lty, alp.abline=alp)
-  axis(1,at=lx,labels=labX,cex.axis=cex)
-  axis(2,at=ly,labels=labY,cex.axis=cex)
+  if(xaxis) axis(if(xaxis.pos) 1 else 3,at=lx,labels=labX,cex.axis=cex)
+  if(yaxis) axis(if(yaxis.pos) 2 else 4,at=ly,labels=labY,cex.axis=cex)
+  rect(par("usr")[1], par("usr")[3],
+       par("usr")[2], par("usr")[4],
+       col=NA,
+       border=col.border$getCol(alp=alp.border))
+  globalVar("xlim.0000000k1DTt5P2hOzSqOZFzG04ip6a3xfdFA9DrDp8Ffilq", xlim)
+  globalVar("ylim.0000000k1DTt5P2hOzSqOZFzG04ip6a3xfdFA9DrDp8Ffilq", ylim)
 }
 
-mplot <- function(x=NULL, y=NULL, 
-                  alp            =nasd(),
-                  col            =nasd(),
-                  lwd            =nasd(),
-                  lty            =nasd(),
+#' @title mplot
+#' @description This is a modification to the \code{graphics::plot} function.
+#' @param x \code{x}-coordinate.
+#' @param y \code{y}-coordinate.
+#' @param xlim limits for \code{x}-axis.
+#' @param ylim limits for \code{x}-axis.
+#' @param col color for \code{itz::mlines} and \code{itz::mpoints}.
+#' @param main main title.
+#' @param xlab \code{x}-axis legend.
+#' @param ylab \code{y}-axis legend.
+#' @param alp.background background color transparency.
+#' @param alp.backlines backlines color transparency.
+#' @param alp.border border color transparency.
+#' @param cex.main scale for main title.
+#' @param cex.lab scale for \code{x}-axis legend.
+#' @param cex.axis scale for \code{y}-axis legend.
+#' @param col.background background color.
+#' @param col.backlines backlines color.
+#' @param col.border border color.
+#' @param labX legends of \code{x}-axis backlines.
+#' @param labY legends of \code{y}-axis backlines.
+#' @param lty.backlines backlines type.
+#' @param lwd.backlines backlines width.
+#' @param lx values of \code{x}-axis backlines.
+#' @param ly values of \code{y}-axis backlines.
+#' @param plot.lines to plot lines graphic.
+#' @param plot.points to plot points graphic.
+#' @param px number of \code{x}-axis backlines.
+#' @param py number of \code{y}-axis backlines.
+#' @param xdigits \code{x}-axis rounding digits.
+#' @param ydigits \code{y}-axis rounding digits.
+#' @param xaxis to show the \code{x}-axis.
+#' @param yaxis to show the \code{y}-axis.
+#' @param xaxis.pos to show the \code{x}-axis on bottom side.
+#' @param yaxis.pos to show the \code{y}-axis on left side.
+#' @param ... supports \code{mlines} and \code{mpoints} parameters
+#' @seealso \code{itz::Plot}, \code{itz::mlines}, \code{itz::mpoints} & \code{itz::color}.
+#' @examples
+#' mplot()
+#' 
+#' mplot(0:1)
+#' 
+#' sq<-seq(0, 4*pi, 0.6)
+#' mplot(sq, sin(sq), plot.points=T, ydigits=2, col="magenta", col.points="cyan")
+#' 
+#' t<-seq(0, 1, 0.05)
+#' mplot(t, l(sqrt(t),t, t^2), plot.points=T, plot.lines=F, col=c("red","blue","green"), lwd.points=2)
+#' 
+#' mplot(rnorm(100), px=3, py=4, ylim=c(-2.5,2.5), ydigits=0, xdigits=0)
+#' 
+#' mplot(runif(100),rnorm(100), px=2, py=2, xaxis=F, yaxis=F, col.background=color(.21,.05,.2), col.backlines="#C9F2CC",xlab="runif", ylab="rnorm", main="title", lwd.backlines=4)
+#' @export
+mplot <- function(x              =NULL, 
+                  y              =NULL, 
+                  xlim           =NULL, 
+                  ylim           =NULL, 
+                  col            =NULL,
+                  main           =NA,
+                  xlab           =NA,
+                  ylab           =NA,
+                  alp.background =nasd(),
                   alp.backlines  =nasd(),
+                  alp.border     =nasd(),
                   cex.axis       =nasd(),
                   cex.lab        =nasd(),
                   cex.main       =nasd(),
                   col.background =nasd(),
                   col.backlines  =nasd(),
+                  col.border     =nasd(),
                   labX           =nasd(),
                   labY           =nasd(),
                   lty.backlines  =nasd(),
                   lwd.backlines  =nasd(),
                   lx             =nasd(),
                   ly             =nasd(),
-                  main           =nasd(),
                   plot.lines     =nasd(),
                   plot.points    =nasd(),
                   px             =nasd(),
                   py             =nasd(),
-                  xlab           =nasd(),
-                  xlim           =nasd(),
-                  ylab           =nasd(),
-                  ylim           =nasd(),
                   xdigits        =nasd(),
                   ydigits        =nasd(),
-                  param=NULL, ...){
-  mlst<- c(list(...), param, Plot("\\get.list"))
-  if(is.nasd(alp))alp<-mlst$alp; if(is.nasd(col))col<-mlst$col; if(is.nasd(lwd))lwd<-mlst$lwd; if(is.nasd(lty))lty<-mlst$lty; if(is.nasd(alp.backlines))alp.backlines<-mlst$alp.backlines; if(is.nasd(cex.axis))cex.axis<-mlst$cex.axis; if(is.nasd(cex.lab))cex.lab<-mlst$cex.lab; if(is.nasd(cex.main))cex.main<-mlst$cex.main; if(is.nasd(col.background))col.background<-mlst$col.background; if(is.nasd(col.backlines))col.backlines<-mlst$col.backlines; if(is.nasd(labX))labX<-mlst$labX; if(is.nasd(labY))labY<-mlst$labY; if(is.nasd(lty.backlines))lty.backlines<-mlst$lty.backlines; if(is.nasd(lwd.backlines))lwd.backlines<-mlst$lwd.backlines; if(is.nasd(lx))lx<-mlst$lx; if(is.nasd(ly))ly<-mlst$ly; if(is.nasd(main))main<-mlst$main; if(is.nasd(plot.lines))plot.lines<-mlst$plot.lines; if(is.nasd(plot.points))plot.points<-mlst$plot.points; if(is.nasd(px))px<-mlst$px; if(is.nasd(py))py<-mlst$py; if(is.nasd(xlab))xlab<-mlst$xlab; if(is.nasd(xlim))xlim<-mlst$xlim; if(is.nasd(ylab))ylab<-mlst$ylab; if(is.nasd(ylim))ylim<-mlst$ylim; if(is.nasd(xdigits))xdigits<-mlst$xdigits; if(is.nasd(ydigits))ydigits<-mlst$ydigits
+                  xaxis          =nasd(),
+                  yaxis          =nasd(),
+                  xaxis.pos      =nasd(),
+                  yaxis.pos      =nasd(),
+                  ...)
+{
+  lst<-list(...); param<-lst$param; lst$param<-NULL
+  mlst<- c(lst, param, Plot("\\get.list"))
+  if(is.nasd(alp.backlines))alp.backlines<-mlst$alp.backlines; if(is.nasd(alp.background))alp.background<-mlst$alp.background; if(is.nasd(alp.border))alp.border<-mlst$alp.border; if(is.nasd(cex.axis))cex.axis<-mlst$cex.axis; if(is.nasd(cex.lab))cex.lab<-mlst$cex.lab; if(is.nasd(cex.main))cex.main<-mlst$cex.main; if(is.nasd(col.background))col.background<-mlst$col.background; if(is.nasd(col.backlines))col.backlines<-mlst$col.backlines; if(is.nasd(col.border))col.border<-mlst$col.border; if(is.nasd(labX))labX<-mlst$labX; if(is.nasd(labY))labY<-mlst$labY; if(is.nasd(lty.backlines))lty.backlines<-mlst$lty.backlines; if(is.nasd(lwd.backlines))lwd.backlines<-mlst$lwd.backlines; if(is.nasd(lx))lx<-mlst$lx; if(is.nasd(ly))ly<-mlst$ly; if(is.nasd(plot.lines))plot.lines<-mlst$plot.lines; if(is.nasd(plot.points))plot.points<-mlst$plot.points; if(is.nasd(px))px<-mlst$px; if(is.nasd(py))py<-mlst$py; if(is.nasd(xdigits))xdigits<-mlst$xdigits; if(is.nasd(ydigits))ydigits<-mlst$ydigits; if(is.nasd(xaxis))xaxis<-mlst$xaxis; if(is.nasd(yaxis))yaxis<-mlst$yaxis; if(is.nasd(xaxis.pos))xaxis.pos<-mlst$xaxis.pos; if(is.nasd(yaxis.pos))yaxis.pos<-mlst$yaxis.pos
   col.background<-fixCol(isnt.null(col.background, mlst$col.background.auxiliar))
   col.backlines<-fixCol(isnt.null(col.backlines, mlst$col.backlines.auxiliar))
+  col.border<-fixCol(isnt.null(col.border, mlst$col.border.auxiliar))
   if(base::is.null(y) & !base::is.null(x)){
     y<-x
     if(is.list(y)){
@@ -476,45 +540,65 @@ mplot <- function(x=NULL, y=NULL,
     }
     ylim <-IF(ymin==ymax, c(ymin-1,ymin+1), c(ymin,ymax))
   }
-  plot(0, 0, xlim=xlim, ylim=ylim, axes=F, main=main, xlab=xlab, ylab=ylab, cex.main=cex.main, cex.lab=cex.lab, type="n")
-  pol(xlim, ylim, px, py, lx, ly, labX,labY, cex.axis, col.background, col.backlines, lwd.backlines, lty.backlines, alp.backlines,xdigits,ydigits)
   
+  plot(0, 0, xlim=xlim, ylim=ylim, axes=F, main=main, xlab=xlab, ylab=ylab, cex.main=cex.main, cex.lab=cex.lab, type="n")
+  pol(xlim, ylim, px, py, lx, ly, labX,labY, cex.axis, col.background, col.backlines, lwd.backlines, lty.backlines, alp.backlines,xdigits,ydigits,alp.background, xaxis, yaxis, xaxis.pos, yaxis.pos, col.border, alp.border)
+  col<-fixCol(col)
   if(plot.lines) {
     mlst.lines  <-Lines("\\get.list")
-    alp.lines <- isnt.null(mlst$alp.lines,
-                           isnt.null(mlst.lines$alp.lines, alp))
-    lwd.lines <- isnt.null(mlst$lwd.lines,
-                           isnt.null(mlst.lines$lwd.lines, lwd))
-    lty.lines <- isnt.null(mlst$lty.lines,
-                           isnt.null(mlst.lines$lty.lines, lty))
-    col.lines <- isnt.null(mlst$col.lines,
-                           isnt.null(mlst.lines$col.lines, col))
-    IF(is.null(col.lines), {col.lines<-color(); mark<-TRUE})
-    mlines(x, y, alp.lines=alp.lines, col.lines=col.lines, lty.lines=lty.lines, lwd.lines=lwd.lines)
+    alp.lines <- isnt.null(mlst$alp.lines, mlst.lines$alp.lines)
+    lwd.lines <- isnt.null(mlst$lwd.lines, mlst.lines$lwd.lines)
+    lty.lines <- isnt.null(mlst$lty.lines, mlst.lines$lty.lines)
+    col.lines <- isnt.null(mlst$col.lines, mlst.lines$col.lines)
+    mlines(x, y, alp.lines=alp.lines, col.lines.auxiliar=col, col.lines=col.lines, lty.lines=lty.lines, lwd.lines=lwd.lines)
   }
   
   if(plot.points){
     mlst.points <-Points("\\get.list")
-    alp.points <- isnt.null(mlst$alp.points,
-                            isnt.null(mlst.points$alp.points, alp))
-    lwd.points <- isnt.null(mlst$lwd.points,
-                            isnt.null(mlst.points$lwd.points, lwd))
-    col.points <- isnt.null(mlst$col.points,
-                            isnt.null(mlst.points$col.points, col))
-    TRY(IF(is.null(col.points) & mark, col.points<-col.lines$copy()))
-    mpoints(x, y, alp.points=alp.points, col.points=col.points, lwd.points=lwd.points)
+    alp.points <- isnt.null(mlst$alp.points, mlst.points$alp.points)
+    lwd.points <- isnt.null(mlst$lwd.points, mlst.points$lwd.points)
+    col.points <- isnt.null(mlst$col.points, mlst.points$col.points)
+    mpoints(x, y, alp.points=alp.points, col.points.auxiliar=col, col.points=col.points, lwd.points=lwd.points)
   }
 }
 
+#' @title mbar
+#' @description This generates a bar plot.
+#' @param x \code{x}-coordinate.
+#' @param y bar values.
+#' @param col.bar bar color.
+#' @param alp.bar bar color transparency.
+#' @param lty.bar bar type.
+#' @param lwd.bar bar width.
+#' @param horizontal horizontal bar.
+#' @seealso \code{itz::Bar} & \code{itz::color}.
+#' @examples
+#' x<--10:10
+#' y0<-x^2
+#' y1<-2*x+20
+#' 
+#' mplot(xlim=c(-10,10), ylim=c(0,100))
+#' 
+#' mlines(x, y0)
+#' 
+#' mlines(x, list(y0, y1), col.lines="#AA33AA", lty.lines=2)
+#' 
+#' mlines(x, list(y0, y1), col.lines=c("red","blue"),lwd.lines=3)
+#' 
+#' mlines(x, y0+30, col=color(0.3,0.7,0.5), lty=2, lwd=3)
+#' 
+#' mlines(x, list(y0, y1), col=c("red","blue"), lwd=5)
+#' @export
 mbar <- function(x, y,#####Añadir plot
-                 alp.bar =nasd(),
                  col.bar =nasd(),
+                 alp.bar =nasd(),
                  lwd.bar =nasd(),
                  lty.bar =nasd(),
                  horizontal=nasd(),
-                 param=NULL, ...)
-{ 
-  mlst<- c(list(...), param, Bar("\\get.list"))
+                 ...)
+{
+  lst<-list(...); param<-lst$param; lst$param<-NULL
+  mlst<- c(lst, param, Bar("\\get.list"))
   if(is.nasd(alp.bar))alp.bar<-mlst$alp.bar; if(is.nasd(col.bar))col.bar<-mlst$col.bar; if(is.nasd(lwd.bar))lwd.bar<-mlst$lwd.bar; if(is.nasd(lty.bar))lty.bar<-mlst$lty.bar; if(is.nasd(horizontal))horizontal<-mlst$horizontal
   col.bar<-fixCol(isnt.null(col.bar, mlst$col.bar.auxiliar))
   od <- order(x)
@@ -536,6 +620,19 @@ mbar <- function(x, y,#####Añadir plot
   }
 }
 
+#' @title mhist
+#' @description This is a modification to the \code{graphics::hist} function.
+#' @param x \code{x}-coordinate.
+#' @param relative relative values.
+#' @param horizontal horizontal histogram.
+#' @param new.histogram to generate a new plot.
+#' @param col.hist histogram color.
+#' @param alp.hist histogram color transparency.
+#' @param lty.hist histogram type.
+#' @param lwd.hist histogram width.
+#' @seealso \code{itz::Hist}, \code{itz::mplot} & \code{itz::color}.
+#' @examples #
+#' @export
 mhist <- function(x,
                   relative   =nasd(),
                   horizontal =nasd(),
@@ -544,9 +641,10 @@ mhist <- function(x,
                   col.hist   =nasd(),
                   lty.hist   =nasd(),
                   lwd.hist   =nasd(),
-                  param=NULL, ...)
+                  ...)
 {
-  mlst<- c(list(...), param, Hist("\\get.list"))
+  lst<-list(...); param<-lst$param; lst$param<-NULL
+  mlst<- c(lst, param, Hist("\\get.list"))
   if(is.nasd(relative))relative<-mlst$relative; if(is.nasd(horizontal))horizontal<-mlst$horizontal; if(is.nasd(new.plot))new.plot<-mlst$new.plot; if(is.nasd(alp.hist))alp.hist<-mlst$alp.hist; if(is.nasd(col.hist))col.hist<-mlst$col.hist; if(is.nasd(lty.hist))lty.hist<-mlst$lty.hist; if(is.nasd(lwd.hist))lwd.hist<-mlst$lwd.hist
   col.hist<-fixCol(isnt.null(col.hist, mlst$col.hist.auxiliar))
   ht<-hist(x, plot=F)
@@ -565,6 +663,27 @@ mhist <- function(x,
   mbar(x,y, horizontal=horizontal, col.bar=col.hist, alp.bar=alp.hist, lwd.bar=lwd.hist, lty.bar=lty.hist)
 }
 
+#' @title mshadow
+#' @description #
+#' @param x1 \code{x1}-coordinate.
+#' @param y1 \code{y1}-coordinate.
+#' @param x2 \code{x2}-coordinate.
+#' @param y2 \code{y2}-coordinate.
+#' @param col.border border color.
+#' @param alp.border border color transparency.
+#' @param lty.border border type.
+#' @param lwd.border border width.
+#' @param col.shadow shadow color.
+#' @param alp.shadow shadow color transparency.
+#' @param col.mean mean color.
+#' @param alp.mean mean color transparency.
+#' @param lty.mean mean type.
+#' @param lwd.mean mean width.
+#' @param plot.mean to plot mean.
+#' @param plot.shadow to plot shadow.
+#' @seealso \code{itz::Shadow} & \code{itz::color}.
+#' @examples #
+#' @export
 mshadow<- function(x1, y1=NULL, x2=NULL, y2=NULL, 
                    alp.border =nasd(),
                    col.border =nasd(),
@@ -582,9 +701,10 @@ mshadow<- function(x1, y1=NULL, x2=NULL, y2=NULL,
                    plot.mean   =nasd(),
                    plot.shadow =nasd(),
                    
-                   param=NULL, ...)
+                   ...)
 {
-  mlst<- c(list(...), param, Shadow("\\get.list"))
+  lst<-list(...); param<-lst$param; lst$param<-NULL
+  mlst<- c(lst, param, Shadow("\\get.list"))
   if(is.nasd(alp.border))alp.border<-mlst$alp.border; if(is.nasd(alp.shadow))alp.shadow<-mlst$alp.shadow; if(is.nasd(alp.mean))alp.mean<-mlst$alp.mean; if(is.nasd(col.border))col.border<-mlst$col.border; if(is.nasd(col.shadow))col.shadow<-mlst$col.shadow; if(is.nasd(col.mean))col.mean<-mlst$col.mean; if(is.nasd(lty.border))lty.border<-mlst$lty.border; if(is.nasd(lty.mean))lty.mean<-mlst$lty.mean; if(is.nasd(lwd.border))lwd.border<-mlst$lwd.border; if(is.nasd(lwd.mean))lwd.mean<-mlst$lwd.mean; if(is.nasd(plot.shadow))plot.shadow<-mlst$plot.shadow; if(is.nasd(plot.mean))plot.mean<-mlst$plot.mean
   col.border<-fixCol(isnt.null(col.border, mlst$col.border.auxiliar))
   col.shadow<-fixCol(isnt.null(col.shadow, mlst$col.shadow.auxiliar))
@@ -611,11 +731,27 @@ mshadow<- function(x1, y1=NULL, x2=NULL, y2=NULL,
     mlines(x1, table$mean, lty.lines=lty.mean, lwd.lines=lwd.mean, col.lines=col.mean, alp.lines=alp.mean)
 }
 
-mlegend <- function(legend="",
-                    pos.legend=nasd(),
+
+posLegend <- function(pos, inf){
+  x<-inf$rect$left
+  y<-inf$rect$top
+  usr<-par("usr")
+  X<-abs(c(usr[1],usr[2])-globalVar("xlim.0000000k1DTt5P2hOzSqOZFzG04ip6a3xfdFA9DrDp8Ffilq"))
+  Y<-abs(c(usr[3],usr[4])-globalVar("ylim.0000000k1DTt5P2hOzSqOZFzG04ip6a3xfdFA9DrDp8Ffilq"))
+  if(pos=="bottomleft"|pos=="bottom"|pos=="bottomright") y<-y+Y[1]
+  if(pos=="topleft"|pos=="top"|pos=="topright") y<-y-Y[2]
+  if(pos=="bottomleft"|pos=="left"|pos=="topleft") x<-x+X[1]
+  if(pos=="bottomright"|pos=="right"|pos=="topright") x<-x-X[2]
+  list(x=x, y=y)
+}
+
+#' @export
+mlegend <- function(pos       ="center",
+                    legend    ="",
                     cex.legend=nasd(),
                     col.legend=nasd(),
                     alp.legend=nasd(),
+                    lin       =nasd(),
                     col.lin   =nasd(),
                     alp.lin   =nasd(),
                     lwd.lin   =nasd(),
@@ -626,23 +762,26 @@ mlegend <- function(legend="",
                     lty.box   =nasd(),
                     col.back  =nasd(),
                     alp.back  =nasd(),
-                    param=NULL, ...)
+                    ...)
 {
-  mlst<- c(list(...), param, Legend("\\get.list"))
-  if(is.nasd(pos.legend))pos.legend<-mlst$pos.legend; if(is.nasd(cex.legend))cex.legend<-mlst$cex.legend; if(is.nasd(col.legend))col.legend<-mlst$col.legend; if(is.nasd(alp.legend))alp.legend<-mlst$alp.legend; if(is.nasd(col.lin))col.lin<-mlst$col.lin; if(is.nasd(alp.lin))alp.lin<-mlst$alp.lin; if(is.nasd(lwd.lin))lwd.lin<-mlst$lwd.lin; if(is.nasd(lty.lin))lty.lin<-mlst$lty.lin; if(is.nasd(col.box))col.box<-mlst$col.box; if(is.nasd(alp.box))alp.box<-mlst$alp.box; if(is.nasd(lwd.box))lwd.box<-mlst$lwd.box; if(is.nasd(lty.box))lty.box<-mlst$lty.box; if(is.nasd(col.back))col.back<-mlst$col.back; if(is.nasd(alp.back))alp.back<-mlst$alp.back
+  lst<-list(...); param<-lst$param; lst$param<-NULL
+  mlst<- c(lst, param, Legend("\\get.list"))
+  if(is.nasd(cex.legend))cex.legend<-mlst$cex.legend; if(is.nasd(col.legend))col.legend<-mlst$col.legend; if(is.nasd(alp.legend))alp.legend<-mlst$alp.legend; if(is.nasd(lin))lin<-mlst$lin; if(is.nasd(col.lin))col.lin<-mlst$col.lin; if(is.nasd(alp.lin))alp.lin<-mlst$alp.lin; if(is.nasd(lwd.lin))lwd.lin<-mlst$lwd.lin; if(is.nasd(lty.lin))lty.lin<-mlst$lty.lin; if(is.nasd(col.box))col.box<-mlst$col.box; if(is.nasd(alp.box))alp.box<-mlst$alp.box; if(is.nasd(lwd.box))lwd.box<-mlst$lwd.box; if(is.nasd(lty.box))lty.box<-mlst$lty.box; if(is.nasd(col.back))col.back<-mlst$col.back; if(is.nasd(alp.back))alp.back<-mlst$alp.back
   col.legend<-fixCol(isnt.null(col.legend, mlst$col.legend.auxiliar))
   col.lin<-fixCol(isnt.null(col.lin, mlst$col.lin.auxiliar))
   col.box<-fixCol(isnt.null(col.box, mlst$col.box.auxiliar))
   col.back<-fixCol(isnt.null(col.back, mlst$col.back.auxiliar))
-  if(is.character(pos.legend)){
-    x<-pos.legend
-    y<-NULL
+  if(is.character(pos)){
+    inf<-graphics::legend(pos,legend=legend, lty=lty.lin, lwd=lwd.lin,cex=cex.legend, box.lty=lty.box, box.lwd=lwd.box, pch=NA, plot = FALSE)
+    pl<-posLegend(pos, inf)
+    x<-pl$x
+    y<-pl$y
   }else{
-    x<-pos.legend[1]
-    y<-pos.legend[2]
+    x<-pos[1]
+    y<-pos[2]
   }
   colNA<-"#00000000"
-  graphics::legend(x, y, legend=legend, lty=lty.lin, lwd=lwd.lin,cex=cex.legend, box.lty=lty.box, bg=col.back$getCol(alp=alp.back), box.lwd=lwd.box, text.col=col.legend$getCol(alp=alp.legend), box.col=colNA, col=colNA)
+  graphics::legend(x, y, legend=legend, lty=lty.lin, lwd=lwd.lin,cex=cex.legend, box.lty=lty.box, bg=col.back$getCol(alp=alp.back), box.lwd=lwd.box, text.col=col.legend$getCol(alp=alp.legend), box.col=colNA, col=colNA, pch=NA)
   n<-max(lwd.box,lwd.lin)
   if(n>0){
     lwd<-lwd.box
@@ -652,17 +791,27 @@ mlegend <- function(legend="",
     col.box<-rep(colNA, n)
     if(lwd>0){
       sq<-seq(0, 1, 1.0/lwd)[-1]
-      for (i in 1:lwd) {
-        col.box[i]<-col$getCol(bri=sq[i], alp=alp.box,this = T)
+      for (i in 1:lwd){
+        col.box[i]<-col$getCol(bri=sq[i], alp=alp.box, this=T)
       }
       NO<-col$getCol()
     }
     
-    lwd.lin.mat<-NULL
-    col.lin.mat<-NULL
+    lin.iter<-iterVector(lin, cyclic = T)
     lwd.iter<-iterVector(lwd.lin, cyclic = T)
     col.iter<-iterCol(col.lin, cyclic = T)
+    lty.lin.iter<-iterVector(lty.lin, cyclic = T)
+    alp.lin.iter<-iterVector(alp.lin, cyclic = T)
+    lwd.lin.mat<-NULL
+    col.lin.mat<-NULL
+    pch<-NULL
+    lty.lin<-NULL
+    alp.lin<-NULL
     for (i in 1:length(legend)) {
+      pch[i]<-if(lin.iter$Next()) NA else 1
+      lty.lin[i]<-lty.lin.iter$Next()
+      alp.lin[i]<-alp.lin.iter$Next()
+      if(!is.na(pch[i])) lty.lin[i]<-0
       lwd<-lwd.iter$Next()
       lwd.lin<-rep(0, n)
       if(lwd>0) lwd.lin[1:lwd]<-2*(lwd-(1:lwd))+1
@@ -670,12 +819,11 @@ mlegend <- function(legend="",
       col.lin<-rep(colNA, n)
       if(lwd>0){
         sq<-seq(0, 1, 1.0/lwd)[-1]
-        for (i in 1:lwd) {
-          col.lin[i]<-col$getCol(bri=sq[i],alp=alp.lin, this=T)
+        for (j in 1:lwd){
+          col.lin[j]<-col$getCol(bri=sq[j], alp=alp.lin[i], this=T)
         }
         NO<-col$getCol()
       }
-      
       lwd.lin.mat<-cbind(lwd.lin.mat, lwd.lin)
       col.lin.mat<-cbind(col.lin.mat, col.lin)
     }
@@ -683,11 +831,31 @@ mlegend <- function(legend="",
       graphics::legend(x, y, legend=legend, lty=lty.lin, cex=cex.legend,
                        box.lty=lty.box, bg=colNA, text.col=colNA,
                        lwd=lwd.lin.mat[i,], col=col.lin.mat[i,],
-                       box.lwd=lwd.box[i], box.col=col.box[i])
+                       box.lwd=lwd.box[i], box.col=col.box[i], pch=pch)
     }
   }
 }
 
+#' @export
+subgraphic <- function(plots,
+                       xmar=NULL, ymar=NULL, 
+                       xfig=NULL, yfig=NULL,
+                       overlap=T){
+  mar<-par("mar")
+  fig<-par("fig")
+  xmar<-if(!is.null(xmar[1])) xmar else mar[c(2,4)]
+  ymar<-if(!is.null(ymar[1])) ymar else mar[c(1,3)]
+  xfig<-if(!is.null(xfig[1])) xfig else fig[c(1,2)]
+  yfig<-if(!is.null(yfig[1])) yfig else fig[c(3,4)]
+  
+  newMar<-c(ymar[1], xmar[1], ymar[2], xmar[2])
+  newFig<-c(xfig, yfig)
+  par(mar=newMar, fig=newFig, new=overlap)
+  plots
+  par(mar=mar, fig=fig)
+}
+
+#' @export
 substrae.LIST.DAT <-function(..., CONDITION, TRANSFORM){
   lst<-list(...)
   dat<-newList()
@@ -702,6 +870,7 @@ substrae.LIST.DAT <-function(..., CONDITION, TRANSFORM){
   return(list(lista.123=lst, data.123=dat))
 }
 
+#' @export
 linesGroup <- function(..., plot.lines=F, plot.points=F, plot.shadow=F, plot.mean=F, col=NULL){
   lst<-list(...)
   if(is.null(lst$lista.123)){
@@ -807,6 +976,7 @@ linesGroup <- function(..., plot.lines=F, plot.points=F, plot.shadow=F, plot.mea
   }
 }
 
+#' @export
 plotGroup<-function(..., new.plot=T, plot.lines=F, plot.points=F, plot.shadow=F, plot.mean=F, col=NULL) {
   if(!new.plot){
     linesGroup(..., plot.lines=plot.lines, plot.points=plot.points, 
@@ -851,6 +1021,7 @@ plotGroup<-function(..., new.plot=T, plot.lines=F, plot.points=F, plot.shadow=F,
   }
 }
 
+#' @export
 printer <- function(prop=3/4, width=9, height=NULL, size=c(1,1)){
   ACTIVE <- newVec(T)
   PROP <- newVec(prop)
@@ -860,6 +1031,7 @@ printer <- function(prop=3/4, width=9, height=NULL, size=c(1,1)){
   
   PDF <- function(file=NULL, prop=NULL, width=NULL, height=NULL, size=NULL){
     if(ACTIVE$get()){
+      OFF()
       if(base::is.null(file)){
         i <- 1
         while(file.exists(paste("output.plot_",i,".pdf",sep=""))){
@@ -875,13 +1047,19 @@ printer <- function(prop=3/4, width=9, height=NULL, size=c(1,1)){
     }
   }
   OFF <- function(){
-    if(ACTIVE$get()) dev.off()
+    if(ACTIVE$get()){
+      ret<-ret<-TRY(dev.off(),"")
+      while(ret!=""){
+        print(ret)
+        ret<-TRY(dev.off(),"")
+      }
+    } 
   }
   
   setActive <- function(value) ACTIVE$set(value)
-  setProp <- function(prop) PROP$set(prop)
-  setWidth <- function(width) WIDTH$set(width)
-  setHeight <- function(height) HEIGTH$set(if(is.numeric(height)) height else NA)
-  setSize <- function(size) SIZE$set(size)
-  return(list(PDF=PDF, OFF=OFF, setActive=setActive, setProp=setProp, setWidth=setWidth, setHeight=setHeight, setSize=setSize))
+  #setProp <- function(prop=3/4) PROP$set(prop)
+  #setWidth <- function(width=9) WIDTH$set(width)
+  #setHeight <- function(height=NULL) HEIGTH$set(if(is.numeric(height)) height else NA)
+  #setSize <- function(size=c(1,1)) SIZE$set(size)
+  return(list(PDF=PDF, OFF=OFF, setActive=setActive))#, setProp=setProp, setWidth=setWidth, setHeight=setHeight, setSize=setSize))
 }
