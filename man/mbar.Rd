@@ -34,22 +34,23 @@ mbar(
 This generates a bar plot.
 }
 \examples{
-x<--10:10
+x<--10:10 
 y0<-x^2
 y1<-2*x+20
 
 mplot(xlim=c(-10,10), ylim=c(0,100))
 
-mlines(x, y0)
+mbar(x, y0)
 
-mlines(x, list(y0, y1), col.lines="#AA33AA", lty.lines=2)
+mbar(x, y0, col.bar="#AA33AA", lty.bar=2)
 
-mlines(x, list(y0, y1), col.lines=c("red","blue"),lwd.lines=3)
+mbar(x, y0, col.bar=c("red","blue"),lwd.bar=3)
+mbar(x, y1, col.bar=c("blue","red"),lwd.bar=3)
 
-mlines(x, y0+30, col=color(0.3,0.7,0.5), lty=2, lwd=3)
-
-mlines(x, list(y0, y1), col=c("red","blue"), lwd=5)
+mbar(x, y0+30, col=color(0.3,0.7,0.5), lty=2, lwd=3)
+mbar(x, y0, col=c("red","blue"), lwd=5)
+mbar(x, y1, col=c("blue","red"), lwd=5)
 }
 \seealso{
-\code{itz::Bar} & \code{itz::color}.
+\code{itz::Bar} \code{itz::mplot}, & \code{itz::color}.
 }

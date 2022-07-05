@@ -51,10 +51,12 @@ color <- function(r=NA, g=NA, b=NA, maxValue=1) {
     n<-max(length(alp), length(bri))
     alp=iterVector(alp, cyclic=T)
     bri=iterVector(bri, cyclic=T)
-    col.1<-NULL
+    color1<-NULL
     for (i in 1:n)
-      col.1[i]<- rgb(bri$This()*r, bri$This()*g, bri$Next()*b, alp$Next())
-    cbind(col.1)
+      color1[i]<- rgb(bri$This()*r, bri$This()*g, bri$Next()*b, alp$Next())
+    color1<-rbind(color1)
+    colnames(color1)<-paste("t",1:n,sep="")
+    color1
   }
   
   combine<- function(col, r=0.5) {
@@ -113,8 +115,8 @@ colorList<- function(r=NA, g=NA, b=NA, maxValue=1) {
     cls<- colist$iter()
     col<-NULL
     while (cls$HasNext())
-      col<-cbind(col,cls$Next()$getCols(alp=alp,bri=bri))
-    colnames(col)<-paste("col",1:colist$length(),sep=".")
+      col<-rbind(col,cls$Next()$getCols(alp=alp,bri=bri))
+    rownames(col)<-paste("color",1:colist$length(), sep="")
     col
   }
   

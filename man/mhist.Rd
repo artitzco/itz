@@ -23,6 +23,8 @@ mhist(
 
 \item{horizontal}{horizontal histogram.}
 
+\item{new.plot}{to generate a new plot.}
+
 \item{alp.hist}{histogram color transparency.}
 
 \item{col.hist}{histogram color.}
@@ -31,13 +33,35 @@ mhist(
 
 \item{lwd.hist}{histogram width.}
 
-\item{new.histogram}{to generate a new plot.}
+\item{...}{supports \code{mplot} parameters.}
 }
 \description{
 This is a modification to the \code{graphics::hist} function.
 }
 \examples{
-#
+set.seed(1993)
+x<-rnorm(100)
+
+mhist(x)
+
+par(mfrow=c(1,2))
+mhist(x, ydigits=0, lty.hist=2)
+mhist(x, relative=F, lty.hist=3, ydigits=0)
+par(mfrow=c(1,1))
+
+col=color.rainbow(11, abs=T)
+mhist(x, ydigits=0, col.hist=col, lwd.hist=3)
+
+set.seed(1990)
+y<-rnorm(100, 2)
+colx<-"#FF4D33"
+coly<-"#334DFF"
+mhist(x, relative=F, col.hist=colx, alp.hist=0.5, xlim=c(-2.5,4.5), ydigits=0)
+mhist(y, relative=F, col.hist=coly, alp.hist=0.5, new.plot=F)
+
+mplot((1:100)/100, l(x,y), col=c(colx, coly), ylim=c(-2.5,4.5), ydigits=1, xaxis=F, lwd.lines=2)
+mhist(x, horizontal=F, col.hist=colx, lwd.hist=2, alp.hist=0.4, new.plot=F)
+mhist(y, horizontal=F, col.hist=coly, lwd.hist=2, alp.hist=0.4, new.plot=F)
 }
 \seealso{
 \code{itz::Hist}, \code{itz::mplot} & \code{itz::color}.

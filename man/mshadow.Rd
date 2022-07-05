@@ -25,7 +25,7 @@ mshadow(
 )
 }
 \arguments{
-\item{x1}{\code{x1}-coordinate.}
+\item{x1}{\code{x1}-coordinate or table with values.}
 
 \item{y1}{\code{y1}-coordinate.}
 
@@ -58,11 +58,37 @@ mshadow(
 \item{plot.shadow}{to plot shadow.}
 }
 \description{
-#
+Shadow plot between two curves \code{(x1, y1)} and \code{(x2, y2)}, and the mean curve.
 }
 \examples{
-#
+x<--10:10
+y1<-x^2
+y2<-2*x+20
+
+mplot(xlim=c(-10,10), ylim=c(0,100))
+mshadow(x,y1,x,y2, col.shadow="#AA33AA", lty.border=3,lwd.border=1, col.border="white")
+
+x<-seq(0,1.3,0.01)
+mplot(xlim=c(0,1.4), ylim=c(0,3))
+mshadow(x, x^4, x, sqrt(x), col.shadow="red")
+mshadow(x, 0.2+x^2, x, 0.2+sqrt(sqrt(x)), col.shadow="blue")
+
+x1<-seq(0,2*pi,.1)
+y1<-(2+sin(x1))*x1
+x2<-x1+1
+y2<-20+(-2+cos(x2))*x2
+mplot(xlim=c(min(x1,x2), max(x1,x2)), ylim=c(min(y1,y2), max(y1,y2)))
+mshadow(x1,y1,x2,y2, col.border = "white", lwd.border=1, col.shadow="#991A99")
+mlines(l(x1,x2),l(y1,y2), col=c("#FF1A33","#331AFF"))
+
+z<-seq(0,1,0.01)
+min<-sqrt(z)
+max<-z^2
+mean<-(min+max)/2
+tab<-data.frame(z, min, max, mean)
+mplot(xlim=c(0,1), ylim=c(0,1))
+mshadow(tab, lwd.border=T)
 }
 \seealso{
-\code{itz::Shadow} & \code{itz::color}.
+\code{itz::Shadow} ,\code{itz::mplot} & \code{itz::color}.
 }

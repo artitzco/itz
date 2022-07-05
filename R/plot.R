@@ -48,8 +48,8 @@ Plot <- function(name, ...) {
       add("cex.axis"      , 1.1)
       add("cex.lab"       , 1.3)
       add("cex.main"      , 1.3)
-      add("col.background", "#161A25")
-      add("col.backlines" , "#808080")
+      add("col.background", "#E0E0E0")
+      add("col.backlines" , "white")
       add("col.border"    , "black")
       add("labX"          , NA)
       add("labY"          , NA)
@@ -508,6 +508,9 @@ mplot <- function(x              =NULL,
   col.background<-fixCol(isnt.null(col.background, mlst$col.background.auxiliar))
   col.backlines<-fixCol(isnt.null(col.backlines, mlst$col.backlines.auxiliar))
   col.border<-fixCol(isnt.null(col.border, mlst$col.border.auxiliar))
+  xlab<- isnt.na(xlab,isnt.null(mlst$xlab,NA))
+  ylab<- isnt.na(ylab,isnt.null(mlst$ylab,NA))
+  main<- isnt.na(main,isnt.null(mlst$main,NA))
   if(base::is.null(y) & !base::is.null(x)){
     y<-x
     if(is.list(y)){
@@ -571,23 +574,24 @@ mplot <- function(x              =NULL,
 #' @param lty.bar bar type.
 #' @param lwd.bar bar width.
 #' @param horizontal horizontal bar.
-#' @seealso \code{itz::Bar} & \code{itz::color}.
+#' @seealso \code{itz::Bar} \code{itz::mplot}, & \code{itz::color}.
 #' @examples
-#' x<--10:10
+#' x<--10:10 
 #' y0<-x^2
 #' y1<-2*x+20
 #' 
 #' mplot(xlim=c(-10,10), ylim=c(0,100))
 #' 
-#' mlines(x, y0)
+#' mbar(x, y0)
 #' 
-#' mlines(x, list(y0, y1), col.lines="#AA33AA", lty.lines=2)
+#' mbar(x, y0, col.bar="#AA33AA", lty.bar=2)
 #' 
-#' mlines(x, list(y0, y1), col.lines=c("red","blue"),lwd.lines=3)
+#' mbar(x, y0, col.bar=c("red","blue"),lwd.bar=3)
+#' mbar(x, y1, col.bar=c("blue","red"),lwd.bar=3)
 #' 
-#' mlines(x, y0+30, col=color(0.3,0.7,0.5), lty=2, lwd=3)
-#' 
-#' mlines(x, list(y0, y1), col=c("red","blue"), lwd=5)
+#' mbar(x, y0+30, col=color(0.3,0.7,0.5), lty=2, lwd=3)
+#' mbar(x, y0, col=c("red","blue"), lwd=5)
+#' mbar(x, y1, col=c("blue","red"), lwd=5)
 #' @export
 mbar <- function(x, y,#####Añadir plot
                  col.bar =nasd(),
@@ -625,13 +629,37 @@ mbar <- function(x, y,#####Añadir plot
 #' @param x \code{x}-coordinate.
 #' @param relative relative values.
 #' @param horizontal horizontal histogram.
-#' @param new.histogram to generate a new plot.
+#' @param new.plot to generate a new plot.
 #' @param col.hist histogram color.
 #' @param alp.hist histogram color transparency.
 #' @param lty.hist histogram type.
 #' @param lwd.hist histogram width.
+#' @param ... supports \code{mplot} parameters.
 #' @seealso \code{itz::Hist}, \code{itz::mplot} & \code{itz::color}.
-#' @examples #
+#' @examples
+#' set.seed(1993)
+#' x<-rnorm(100)
+#' 
+#' mhist(x)
+#' 
+#' par(mfrow=c(1,2))
+#' mhist(x, ydigits=0, lty.hist=2)
+#' mhist(x, relative=F, lty.hist=3, ydigits=0)
+#' par(mfrow=c(1,1))
+#' 
+#' col=color.rainbow(11, abs=T)
+#' mhist(x, ydigits=0, col.hist=col, lwd.hist=3)
+#' 
+#' set.seed(1990)
+#' y<-rnorm(100, 2)
+#' colx<-"#FF4D33"
+#' coly<-"#334DFF"
+#' mhist(x, relative=F, col.hist=colx, alp.hist=0.5, xlim=c(-2.5,4.5), ydigits=0)
+#' mhist(y, relative=F, col.hist=coly, alp.hist=0.5, new.plot=F)
+#' 
+#' mplot((1:100)/100, l(x,y), col=c(colx, coly), ylim=c(-2.5,4.5), ydigits=1, xaxis=F, lwd.lines=2)
+#' mhist(x, horizontal=F, col.hist=colx, lwd.hist=2, alp.hist=0.4, new.plot=F)
+#' mhist(y, horizontal=F, col.hist=coly, lwd.hist=2, alp.hist=0.4, new.plot=F)
 #' @export
 mhist <- function(x,
                   relative   =nasd(),
@@ -664,8 +692,8 @@ mhist <- function(x,
 }
 
 #' @title mshadow
-#' @description #
-#' @param x1 \code{x1}-coordinate.
+#' @description Shadow plot between two curves \code{(x1, y1)} and \code{(x2, y2)}, and the mean curve.
+#' @param x1 \code{x1}-coordinate or table with values.
 #' @param y1 \code{y1}-coordinate.
 #' @param x2 \code{x2}-coordinate.
 #' @param y2 \code{y2}-coordinate.
@@ -681,8 +709,35 @@ mhist <- function(x,
 #' @param lwd.mean mean width.
 #' @param plot.mean to plot mean.
 #' @param plot.shadow to plot shadow.
-#' @seealso \code{itz::Shadow} & \code{itz::color}.
-#' @examples #
+#' @seealso \code{itz::Shadow} ,\code{itz::mplot} & \code{itz::color}.
+#' @examples
+#' x<--10:10
+#' y1<-x^2
+#' y2<-2*x+20
+#'
+#' mplot(xlim=c(-10,10), ylim=c(0,100))
+#' mshadow(x,y1,x,y2, col.shadow="#AA33AA", lty.border=3,lwd.border=1, col.border="white")
+#'
+#' x<-seq(0,1.3,0.01)
+#' mplot(xlim=c(0,1.4), ylim=c(0,3))
+#' mshadow(x, x^4, x, sqrt(x), col.shadow="red")
+#' mshadow(x, 0.2+x^2, x, 0.2+sqrt(sqrt(x)), col.shadow="blue")
+#'
+#' x1<-seq(0,2*pi,.1)
+#' y1<-(2+sin(x1))*x1
+#' x2<-x1+1
+#' y2<-20+(-2+cos(x2))*x2
+#' mplot(xlim=c(min(x1,x2), max(x1,x2)), ylim=c(min(y1,y2), max(y1,y2)))
+#' mshadow(x1,y1,x2,y2, col.border = "white", lwd.border=1, col.shadow="#991A99")
+#' mlines(l(x1,x2),l(y1,y2), col=c("#FF1A33","#331AFF"))
+#'
+#' z<-seq(0,1,0.01)
+#' min<-sqrt(z)
+#' max<-z^2
+#' mean<-(min+max)/2
+#' tab<-data.frame(z, min, max, mean)
+#' mplot(xlim=c(0,1), ylim=c(0,1))
+#' mshadow(tab, lwd.border=T)
 #' @export
 mshadow<- function(x1, y1=NULL, x2=NULL, y2=NULL, 
                    alp.border =nasd(),
@@ -721,8 +776,8 @@ mshadow<- function(x1, y1=NULL, x2=NULL, y2=NULL,
   if(is.null(col.mean)) col.mean<-color()
   if(is.null(col.border)) col.border<-color()
   if(is.null(col.shadow)) col.shadow<-color()
-  x<-c(x1,x2[length(x2):1])
-  y<-c(y1,y2[length(y2):1])
+  x<-c(x1,x2[length(x2):1],x1[1])
+  y<-c(y1,y2[length(y2):1],y1[1])
   if(plot.shadow){
     polygon(x,y, col=col.shadow$getCol(alp.shadow), border= "#00000000")
     mlines(x,y, lty.lines=lty.border, lwd.lines=lwd.border, col.lines=col.border, alp.lines=alp.border)
@@ -745,6 +800,35 @@ posLegend <- function(pos, inf){
   list(x=x, y=y)
 }
 
+#' @title mlegend
+#' @description This is a modification to the \code{graphics::legend} function.
+#' @param pos location of legend.
+#' @param legend text of legend.
+#' @param cex.legend scale for legend.
+#' @param col.legend legend color.
+#' @param alp.legend legend color transparency.
+#' @param lin to draw a line or a point.
+#' @param col.lin lines color.
+#' @param alp.lin lines color transparency.
+#' @param lty.lin lines type.
+#' @param lwd.lin lines width.
+#' @param col.box box color.
+#' @param alp.box box color transparency.
+#' @param lty.box box type.
+#' @param lwd.box box width.
+#' @param col.back back color.
+#' @param alp.back back color transparency.
+#' @seealso \code{itz::Legend}, \code{itz::mplot} & \code{itz::color}.
+#' @examples
+#' mplot()
+#' mlegend(legend=c("a","b"), col.lin=c("blue","red"), lty.lin=c(1,2))
+#'
+#' mlegend("topleft", legend=c("a","b","c"), col.lin=c("blue","red","green"), lty.lin=c(3,2,1), lwd.lin=c(1,2,3))
+#'
+#' mlegend("topright", legend=c("a","b"), col.lin=c("purple","magenta"), lwd.lin=4, lin=c(F,T))
+#'
+#' mplot()
+#' mlegend(c(0,1),legend=c("a","b"), col.lin=c("blue","red"), cex.legend=2, col.box="orange", lwd.box=5, lty.box=1)
 #' @export
 mlegend <- function(pos       ="center",
                     legend    ="",
@@ -1022,7 +1106,7 @@ plotGroup<-function(..., new.plot=T, plot.lines=F, plot.points=F, plot.shadow=F,
 }
 
 #' @export
-printer <- function(prop=3/4, width=9, height=NULL, size=c(1,1)){
+printer <- function(prop=0.68, width=9, height=NULL, size=c(1,1)){
   ACTIVE <- newVec(T)
   PROP <- newVec(prop)
   WIDTH <- newVec(width)
@@ -1057,9 +1141,5 @@ printer <- function(prop=3/4, width=9, height=NULL, size=c(1,1)){
   }
   
   setActive <- function(value) ACTIVE$set(value)
-  #setProp <- function(prop=3/4) PROP$set(prop)
-  #setWidth <- function(width=9) WIDTH$set(width)
-  #setHeight <- function(height=NULL) HEIGTH$set(if(is.numeric(height)) height else NA)
-  #setSize <- function(size=c(1,1)) SIZE$set(size)
-  return(list(PDF=PDF, OFF=OFF, setActive=setActive))#, setProp=setProp, setWidth=setWidth, setHeight=setHeight, setSize=setSize))
+  return(list(PDF=PDF, OFF=OFF, setActive=setActive))
 }
