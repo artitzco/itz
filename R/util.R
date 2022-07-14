@@ -1,4 +1,60 @@
 #' @export
+create.dir<- function(path){
+  spath<-strsplit(path,"/")[[1]]
+  P<-""
+  for (i in 1:length(spath)) {
+    P<-if(i==1) spath[1] else pst(P, "/",spath[i])
+    if(!dir.exists(P)) dir.create(P)
+  }
+}
+
+#' @export
+csv.scanner<- function(file, lista=NULL, basis=""){
+  return(csv.scanner_(file, lista, basis)$get())
+}
+
+csv.scanner_<- function(file, lista, basis){
+  if(is.null(lista)){
+    basis<-file
+    lista<-newList(basis)
+    file<-""
+  }
+  df<-dir(if(file!="")pst(basis,"/",file) else basis)
+  if(length(df)!=0){
+    for(d in df){
+      nfile<-if(file!="") pst(file,"/",d) else d
+      if(file.info(pst(basis,"/",nfile))$isdir){
+        csv.scanner(nfile, lista=lista, basis=basis)
+      }else{
+        nc<-nchar(d)
+        if(nchar(d)>4){
+          if(substr(d, nc-3, nc)==".csv"){
+            lista$add(list(file=file, name=nfile, value=read.csv(pst(basis,"/",nfile))))
+          }
+        }
+      }
+    }
+  }
+  lista
+}
+
+#' @export
+csv.printer<- function(lista, basis=NULL){
+  if(is.null(basis)) basis<-lista[[1]]
+  
+  if(basis!="") basis<-pst(basis,"/")
+  
+  lista[[1]]<-NULL
+  n<-length(lista)
+  if(n>0){
+    for (i in 1:length(lista)) {
+      create.dir(pst(basis,lista[[i]]$file))
+      write.csv(lista[[i]]$value, pst(basis, lista[[i]]$name), na="",  row.names=F)
+    }
+  }  
+}
+
+#' @export
 l<-function(...) list(...)
 
 #' @export
