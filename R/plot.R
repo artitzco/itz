@@ -508,9 +508,9 @@ mplot <- function(x              =NULL,
   col.background<-fixCol(isnt.null(col.background, mlst$col.background.auxiliar))
   col.backlines<-fixCol(isnt.null(col.backlines, mlst$col.backlines.auxiliar))
   col.border<-fixCol(isnt.null(col.border, mlst$col.border.auxiliar))
-  xlab<- isnt.na(xlab,isnt.null(mlst$xlab,NA))
-  ylab<- isnt.na(ylab,isnt.null(mlst$ylab,NA))
-  main<- isnt.na(main,isnt.null(mlst$main,NA))
+  xlab<- if(is.expression(xlab)) xlab else isnt.na(xlab,isnt.null(mlst$xlab,NA))
+  ylab<- if(is.expression(ylab)) ylab else isnt.na(ylab,isnt.null(mlst$ylab,NA))
+  main<- if(is.expression(main)) main else isnt.na(main,isnt.null(mlst$main,NA))
   if(base::is.null(y) & !base::is.null(x)){
     y<-x
     if(is.list(y)){
