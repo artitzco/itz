@@ -1,0 +1,13 @@
+Package: itz
+Type: Package
+Title: itz - A library for data visualization, vector manipulation, and custom graphics in R
+Version: 0.1.5
+Authors@R: 
+    person("Medina Ruiz A. I.", email="artitzco@proton.me", role = c("aut", "cre"))
+Maintainer: artitzco <artitzco@proton.me>
+Description: The itz package is a comprehensive library for data visualization, vector manipulation, and custom graphics in R. It provides a wide range of functions and tools to create, customize, and enhance visual representations of data. With itz, you can easily generate various types of plots, including line plots, scatter plots, bar plots, histograms, and more. The library also offers advanced features for manipulating vectors, such as merging, subsetting, and transforming data. Additionally, itz enables the creation of custom graphics through its flexible and extensible framework. Whether you are a data analyst, scientist, or developer, itz empowers you to effectively communicate insights and showcase data through visually appealing and informative graphics. Start exploring the possibilities of data visualization with itz today!
+Imports: R6
+License: GPL-3
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.2.3
